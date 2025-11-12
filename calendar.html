@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar - Budget Calendar</title>
+  <link rel="stylesheet" href="css/project.css">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
+</head>
+<body>
+  <div id="wrapper">
+    <header>
+      <nav class="top-nav">
+		  <div class="logo"><a href="index.html">Save Path</a></div>
+          <a href="dashboard.html">Dashboard</a>
+          <a href="calendar.html">Calendar</a>
+          <a href="visuals.html">Visuals</a>
+          <a href="goals.html">Goals</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="content-container">
+        <div class="left-column">
+          <h2>Calendar</h2>
+          <p>View and manage your transactions with flexible calendar options for daily, weekly, or monthly planning.</p>
+
+          <label for="month-selector">Jump to Month (applies to all views):</label>
+          <select id="month-selector" style="margin-bottom: 20px;"></select>
+
+          <div class="calendar-nav-buttons" style="margin-bottom: 20px;">
+            <button id="back-day">← Back 1 Day</button>
+            <button id="forward-day">→ Forward 1 Day</button>
+            <button id="back-week">← Back 1 Week</button>
+            <button id="forward-week">→ Forward 1 Week</button>
+          </div>
+
+          <div id="calendar" style="margin-top: 20px;"></div>
+        </div>
+
+        <div class="right-column">
+          <img src="images/calendar.png" alt="Calendar Visualization" class="calendar-image">
+          <div class="calendar-info-boxes">
+            <div class="calendar-box" id="day-view" role="button" aria-label="Switch to Day View">
+              <h3>Day View</h3>
+            </div>
+            <div class="calendar-box" id="week-view" role="button" aria-label="Switch to Week View">
+              <h3>Week View</h3>
+            </div>
+            <div class="calendar-box" id="month-view" role="button" aria-label="Switch to Month View">
+              <h3>Month View</h3>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Budget Calendar | All Rights Reserved<br>Contact us: 777-888-9999</p>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const calendarEl = document.getElementById('calendar');
+      const monthSelector = document.getElementById('month-selector');
+
+      const storedTransactions = JSON.parse(localStorage.getItem('transactions')) || [];
+
+      const today = new Date();
+      const startRange = new Date(today.getFullYear(), today.getMonth() - 3, 1);
+      const endRange = new Date(today.getFullYear(), today.getMonth() + 4, 0);
+
+      function generateRecurringEvents(tx) {
+        const events = [];
+        const baseDate = new Date(tx.date);
+        const color = tx.type === 'income' ? 'green' : 'red';
+
+        if (tx.frequency === 'single' || !tx.frequency) {
+          if (baseDate >= startRange && baseDate <= endRange) {
+            events.push({
+              title: `${tx.desc} - $${tx.amount}`,
+              start: tx.date,
+              color: color,
+              allDay: true
+            });
+          }
+        } else {
+          let current = new Date(baseDate);
+          while (current <= endRange) {
+            if (current >= startRange) {
+              events.push({
+                title: `${tx.desc} - $${tx.amount}`,
+                start: current.toISOString().slice(0, 10),
+                color: color,
+                allDay: true
+              });
+            }
+            if (tx.frequency === 'weekly') {
+              current.setDate(current.getDate() + 7);
+            } else if (tx.frequency === 'monthly') {
+              current.setMonth(current.getMonth() + 1);
+            } else {
+              break;
+            }
+          }
+        }
+
+        return events;
+      }
+
+      const events = storedTransactions.flatMap(tx => generateRecurringEvents(tx));
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        height: 'auto',
+        headerToolbar: false,
+        events: events,
+        dateClick: function(info) {
+          calendar.changeView('dayGridDay', info.dateStr);
+        }
+      });
+
+      calendar.render();
+
+      document.getElementById('day-view').onclick = () => calendar.changeView('dayGridDay');
+      document.getElementById('week-view').onclick = () => calendar.changeView('dayGridWeek');
+      document.getElementById('month-view').onclick = () => calendar.changeView('dayGridMonth');
+
+      for (let offset = -3; offset <= 3; offset++) {
+        const date = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+        const value = date.toISOString().slice(0, 10);
+        const label = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = label;
+        if (offset === 0) option.selected = true;
+        monthSelector.appendChild(option);
+      }
+
+      monthSelector.addEventListener('change', function() {
+        const selectedDate = new Date(this.value);
+        calendar.gotoDate(selectedDate);
+      });
+
+      document.getElementById('back-day').onclick = () => calendar.incrementDate({ days: -1 });
+      document.getElementById('forward-day').onclick = () => calendar.incrementDate({ days: 1 });
+      document.getElementById('back-week').onclick = () => calendar.incrementDate({ days: -7 });
+      document.getElementById('forward-week').onclick = () => calendar.incrementDate({ days: 7 });
+    });
+  </script>
+</body>
+</html>

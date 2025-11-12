@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recent Transactions - Save Path</title>
+  <link rel="stylesheet" href="css/project.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url('images/background.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #0A1128;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .content-container {
+      display: flex;
+      justify-content: flex-start;
+      padding: 4em;
+    }
+
+    .recent-block {
+      width: 40%;          /* same as Summary block */
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 2em;
+      border-radius: 12px;
+    }
+
+    .recent-block h2 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #034078;
+      margin: 0 0 1em 0;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .controls {
+      text-align: center;
+      margin-bottom: 1em;
+    }
+
+    .controls label {
+      font-weight: 600;
+      margin-right: 10px;
+      color: #034078;
+    }
+
+    #transaction-count {
+      background-color: #b3d9ff;
+      color: #034078;
+      padding: 12px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      border: none;
+      text-align: center;
+      transition: background 0.3s ease, transform 0.2s;
+      appearance: none;
+    }
+
+    #transaction-count:hover {
+      background-color: #fffff;
+      transform: translateY(-3px);
+    }
+
+    .feature-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 0 1.5em 0;
+      font-size: 1.1em;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .feature-table th {
+      background-color: #357ab7;
+      color: #fff;
+      padding: 12px;
+    }
+
+    .feature-table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .feature-table tr:nth-child(odd) {
+      background-color: #e6f2ff; /* baby blue */
+    }
+
+    .feature-table tr:nth-child(even) {
+      background-color: #ffffff; /* white */
+    }
+
+    .dashboard-info-boxes {
+      display: flex;
+      justify-content: center;
+    }
+
+    .dashboard-box {
+      background-color: #4a90e2;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s;
+    }
+
+    .dashboard-box:hover {
+      background-color: #357ab7;
+      transform: translateY(-3px);
+    }
+
+    footer {
+      background-color: rgba(0,0,0,0.6);
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      width: 100%;
+    }
+	
+  </style>
+</head>
+<body>
+  <div id="wrapper">
+    <header>
+      <div class="logo"><a href="index.html">Save Path</a></div>
+      <nav class="top-nav">
+          <a href="quickadd.html" class="home-link">Quick Add</a>
+          <a href="dashboard.html">Dashboard</a>
+          <a href="calendar.html">Calendar</a>
+          <a href="visuals.html">Visuals</a>
+          <a href="goals.html">Goals</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="content-container">
+        <div class="recent-block">
+          <h2>Recent Transactions</h2>
+
+          <div class="controls">
+            <label for="transaction-count">Show recent:</label>
+            <select id="transaction-count">
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5" selected>5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+
+          <table class="feature-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Frequency</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody id="transactions-body"></tbody>
+          </table>
+
+          <div class="dashboard-info-boxes">
+            <div class="dashboard-box" onclick="location.href='dashboard.html'">
+              Back to Dashboard
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Budget Calendar | All Rights Reserved<br>Contact us: 777-888-9999</p>
+    </footer>
+  </div>
+
+  <script>
+    const tbody = document.getElementById('transactions-body');
+    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+
+    // Sort newest first
+    transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    function renderTransactions(count) {
+      tbody.innerHTML = ""; // clear old rows
+
+      transactions.slice(0, count).forEach(tx => {
+        const row = document.createElement('tr');
+
+        const dateCell = document.createElement('td');
+        const dateObj = new Date(tx.date);
+        const month = dateObj.getMonth() + 1;
+        const day = dateObj.getDate();
+        dateCell.textContent = `${month}/${day}`;
+        row.appendChild(dateCell);
+
+        const descCell = document.createElement('td');
+        descCell.textContent = tx.desc || tx.description || "";
+        row.appendChild(descCell);
+
+        const freqCell = document.createElement('td');
+        freqCell.textContent = tx.frequency || "";
+        row.appendChild(freqCell);
+
+        const amountCell = document.createElement('td');
+        amountCell.classList.add('amount');
+        amountCell.textContent = tx.type === 'expense' 
+          ? `-$${tx.amount.toFixed(2)}` 
+          : `+$${tx.amount.toFixed(2)}`;
+        amountCell.style.color = tx.type === 'expense' ? '#d00000' : '#007f5f';
+        row.appendChild(amountCell);
+
+        tbody.appendChild(row);
+      });
+    }
+
+    // Default render (5)
+    renderTransactions(5);
+
+    // Listen for dropdown changes
+    document.getElementById('transaction-count').addEventListener('change', (e) => {
+      const count = parseInt(e.target.value, 10);
+      renderTransactions(count);
+    });
+  </script>
+</body>

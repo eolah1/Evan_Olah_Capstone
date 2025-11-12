@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Summary - Save Path</title>
+  <link rel="stylesheet" href="css/project.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url('images/background.png') no-repeat center center fixed;
+      background-size: cover; /* ensures full coverage */
+      color: #0A1128;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .content-container {
+      display: flex;
+      justify-content: flex-start;
+      padding: 4em;
+    }
+
+    .summary-block {
+      width: 40%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 2em;
+      border-radius: 12px;
+    }
+
+    .summary-block h2 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #034078;
+      margin: 0 0 1em 0;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .feature-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 0 1.5em 0;
+      font-size: 1.1em;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .feature-table th {
+      background-color: #357ab7;
+      color: #fff;
+      padding: 12px;
+    }
+
+    .feature-table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .feature-table tr:nth-child(1) {
+	  background-color: #ffffff; 
+	}
+
+	.feature-table tr:nth-child(2) {
+	  background-color: #e0f0ff; 
+	}
+
+	.feature-table tr:nth-child(3) {
+	  background-color: #b3d9ff;
+	}
+
+    #balance {
+      font-weight: bold;
+      font-size: 1.3em;
+    }
+
+    .dashboard-info-boxes {
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .dashboard-box {
+      background-color: #4a90e2;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s;
+    }
+
+    .dashboard-box:hover {
+      background-color: #357ab7;
+      transform: translateY(-3px);
+    }
+
+    footer {
+      background-color: rgba(0,0,0,0.6);
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="wrapper">
+    <header>
+      <div class="logo"><a href="index.html">Save Path</a></div>
+      <nav class="top-nav">
+          <a href="quickadd.html" class="home-link">Quick Add</a>
+          <a href="dashboard.html">Dashboard</a>
+          <a href="calendar.html">Calendar</a>
+          <a href="visuals.html">Visuals</a>
+          <a href="goals.html">Goals</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="content-container">
+        <div class="summary-block">
+          <h2>Summary</h2>
+          <table class="feature-table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Income</td>
+                <td id="total-income">$0</td>
+              </tr>
+              <tr>
+                <td>Expenses</td>
+                <td id="total-expenses">$0</td>
+              </tr>
+              <tr>
+                <td>Balance</td>
+                <td id="balance">$0</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="dashboard-info-boxes">
+            <div class="dashboard-box back-dashboard" onclick="location.href='dashboard.html'">
+              ← Back to Dashboard
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Budget Calendar | All Rights Reserved<br>Contact us: 777-888-9999</p>
+    </footer>
+  </div>
+
+  <script>
+    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+
+    let totalIncome = 0;
+    let totalExpenses = 0;
+
+    transactions.forEach(tx => {
+      if (tx.type === 'income') {
+        totalIncome += tx.amount;
+      } else {
+        totalExpenses += tx.amount;
+      }
+    });
+
+    const balance = totalIncome - totalExpenses;
+
+    // Update table cells with color coding
+    const incomeCell = document.getElementById('total-income');
+    incomeCell.textContent = `+$${totalIncome.toFixed(2)}`;
+    incomeCell.style.color = '#007f5f';
+
+    const expensesCell = document.getElementById('total-expenses');
+    expensesCell.textContent = `-$${totalExpenses.toFixed(2)}`;
+    expensesCell.style.color = '#d00000';
+
+    const balanceCell = document.getElementById('balance');
+    balanceCell.textContent = `$${balance.toFixed(2)}`;
+    balanceCell.style.color = balance >= 0 ? '#007f5f' : '#d00000';
+  </script>
+</body>
+</html>
