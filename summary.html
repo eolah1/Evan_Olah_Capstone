@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Summary - Save Path</title>
+  <link rel="stylesheet" href="css/project.css">
+</head>
+<body>
+  <div id="wrapper">
+    <header>
+      <div class="logo">Save Path</div>
+      <nav class="top-nav">
+        <a href="index.html" class="home-link">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="calendar.html">Calendar</a>
+        <a href="visuals.html">Visuals</a>
+        <a href="goals.html">Goals</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="content-container">
+        <div class="left-column">
+          <h2>Summary</h2>
+
+          <table class="summary-totals">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Income</td>
+                <td id="total-income">$0</td>
+              </tr>
+              <tr>
+                <td>Expenses</td>
+                <td id="total-expenses">$0</td>
+              </tr>
+              <tr>
+                <td>Balance</td>
+                <td id="balance">$0</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="dashboard-info-boxes">
+            <div class="dashboard-box back-dashboard" onclick="location.href='dashboard.html'">
+              ← Back to Dashboard
+            </div>
+          </div>
+        </div>
+
+        <div class="right-column">
+          <img src="images/summary.jpg" alt="Summary Visual">
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Budget Calendar | All Rights Reserved</p>
+    </footer>
+  </div>
+
+  <script>
+    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+
+    let totalIncome = 0;
+    let totalExpenses = 0;
+
+    transactions.forEach(tx => {
+      if (tx.type === 'income') {
+        totalIncome += tx.amount;
+      } else {
+        totalExpenses += tx.amount;
+      }
+    });
+
+    const balance = totalIncome - totalExpenses;
+
+    document.getElementById('total-income').textContent = `Income: $${totalIncome.toFixed(2)}`;
+    document.getElementById('total-expenses').textContent = `Expenses: $${totalExpenses.toFixed(2)}`;
+    document.getElementById('balance').textContent = `Balance: $${balance.toFixed(2)}`;
+  </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goals - Budget Calendar</title>
+  <link rel="stylesheet" href="css/project.css">
+</head>
+<body>
+  <div id="wrapper">
+    <header>
+      <div class="logo">Save Path</div>
+      <nav class="top-nav">
+        <a href="index.html" class="home-link">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="calendar.html">Calendar</a>
+        <a href="visuals.html">Visuals</a>
+        <a href="goals.html">Goals</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="content-container">
+        <div class="left-column">
+          <h2>Goals</h2>
+          <p>Set and track your financial goals to stay on top of your savings and spending habits.</p>
+
+          <form action="https://webdevbasics.net/scripts/demo.php" method="post" class="goal-form">
+            <h3>Set Your Financial Goal</h3>
+
+            <label for="goalName">Goal Name:</label>
+            <input type="text" id="goalName" name="goalName" placeholder="e.g., Save for vacation" required>
+
+            <label for="targetAmount">Target Amount ($):</label>
+            <input type="number" id="targetAmount" name="targetAmount" min="0" step="0.01" placeholder="Enter target amount" required>
+
+            <label for="currentAmount">Current Amount ($):</label>
+            <input type="number" id="currentAmount" name="currentAmount" min="0" step="0.01" placeholder="Enter current amount">
+
+            <label for="targetDate">Target Date:</label>
+            <input type="date" id="targetDate" name="targetDate" required>
+
+            <label for="category">Goal Category:</label>
+            <select id="category" name="category">
+              <option value="">-- Select Category --</option>
+              <option value="savings">Savings</option>
+              <option value="debt">Debt</option>
+              <option value="investment">Investment</option>
+              <option value="other">Other</option>
+            </select>
+
+            <label for="notes">Description / Notes:</label>
+            <textarea id="notes" name="notes" rows="4" placeholder="Add any details about your goal..."></textarea>
+
+            <div class="checkbox-group">
+              <input type="checkbox" id="priority" name="priority">
+              <label for="priority" class="checkbox-label">Set as Priority Goal</label>
+            </div>
+
+            <button type="submit" class="submit-btn">Save Goal</button>
+          </form>
+        </div>
+
+        <div class="right-column">
+          <img src="images/goals.png" alt="Goals Visualization" class="calendar-image">
+
+          <div class="calendar-info-boxes">
+            <div class="calendar-box" id="add-goals" role="button" aria-label="Add Goals">
+              <h3>Add Goals</h3>
+            </div>
+            <div class="calendar-box" id="progress" role="button" aria-label="View Progress">
+              <h3>Progress</h3>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Budget Calendar | All Rights Reserved</p>
+    </footer>
+  </div>
+</body>
