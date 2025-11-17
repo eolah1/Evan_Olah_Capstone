@@ -5,71 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quick Add - Save Path</title>
   <link rel="stylesheet" href="css/project.css">
-  <style>
-    .top-nav {
-	  display: flex;
-	  align-items: center;
-	  gap: 32px; /* consistent spacing between all nav items */
-	}
-
-	.controls {
-	  display: flex;
-	  align-items: center;
-	  gap: 10px; /* small space between "Explore:" and dropdown */
-	  margin: 0; /* remove extra margin */
-	padding: 0;
-	}
-
-    #nav-select {
-      background-color: #ffffff;
-      color: #0A1128;
-      font-family: inherit;
-      font-weight: 600;
-      padding: 0.5rem 1.2rem;
-      border: 2px solid #0077b6;
-      border-radius: 1rem;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-      appearance: none;
-      background-image: linear-gradient(45deg, transparent 50%, #0077b6 50%),
-                        linear-gradient(135deg, #0077b6 50%, transparent 50%);
-      background-position: calc(100% - 20px) calc(1.1em), calc(100% - 15px) calc(1.1em);
-      background-size: 5px 5px, 5px 5px;
-      background-repeat: no-repeat;
-      vertical-align: middle;
-    }
-
-    #nav-select:hover {
-      border-color: #023e8a;
-      background-color: #f1f8ff;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-    }
-
-    #nav-select:focus {
-      outline: none;
-      border-color: #023e8a;
-      box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.3);
-    }
-	
-	.controls label {
-	  color: var(--white);
-	  font-weight: 600;
-	  font-size: 1.3rem;
-	  font-family: inherit;
-	}
-  </style>
 </head>
-<body>
+<body class="quickadd-bg">
   <div id="wrapper">
     <header>
       <h1 class="site-title">Save Path</h1>
       <nav class="top-nav">
-        <!-- Home -->
         <a href="index.html" class="home-link">Home</a>
-
-        <!-- Dropdown navigation -->
         <div class="controls">
           <label for="nav-select">Explore:</label>
           <select id="nav-select">
@@ -80,45 +22,61 @@
             <option value="calendar.html">Calendar</option>
           </select>
         </div>
-
-        <!-- Quick Add -->
         <a href="quickadd.html" class="quick-add-btn">+ Quick Add</a>
       </nav>
     </header>
 
     <main>
-      <div class="quickadd-card">
-        <h2>Add New Expense</h2>
+      <section id="quickadd-choice" class="quickadd-choice">
+        <div id="choose-expense" class="dashboard-box">
+          <h3>Add Expense/Income</h3>
+          <p>Log a one-time transaction.</p>
+        </div>
+        <div id="choose-recurring" class="dashboard-box">
+          <h3>Add Recurring Payment</h3>
+          <p>Set up a weekly or monthly bill.</p>
+        </div>
+      </section>
 
+      <div class="quickadd-card" id="expense-card" style="display:none;">
+        <h2>Add New Expense/Income</h2>
         <form id="expense-form">
           <label for="desc">Description:</label>
           <input type="text" id="desc" required>
-
           <label for="amount">Amount:</label>
           <input type="number" id="amount" required>
-
           <label for="type">Type:</label>
           <select id="type">
             <option value="expense">Expense</option>
             <option value="income">Income</option>
           </select>
-
           <label for="date">Date:</label>
           <input type="date" id="date" required>
+          <button type="submit">Add</button>
+        </form>
+        <button class="back-btn" onclick="goBack()">← Back to Options</button>
+      </div>
 
+      <div class="quickadd-card" id="recurring-card" style="display:none;">
+        <h2>Add Recurring Payment</h2>
+        <form id="recurring-form">
+          <label for="rdesc">Description:</label>
+          <input type="text" id="rdesc" required>
+          <label for="ramount">Amount:</label>
+          <input type="number" id="ramount" required>
           <label for="frequency">Frequency:</label>
           <select id="frequency" required>
             <option value="">-- Select Frequency --</option>
-            <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
             <option value="monthly">Monthly</option>
-            <option value="single">Single</option>
           </select>
-
-          <button type="submit">Add</button>
+          <label for="startDate">Start Date:</label>
+          <input type="date" id="startDate" required>
+          <label for="endDate">End Date (optional):</label>
+          <input type="date" id="endDate">
+          <button type="submit">Add Recurring Payment</button>
         </form>
-
-        <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+        <button class="back-btn" onclick="goBack()">← Back to Options</button>
       </div>
     </main>
 
@@ -128,33 +86,58 @@
   </div>
 
   <script>
-    // Quick Add form logic
-    const form = document.getElementById('expense-form');
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
+    document.getElementById('nav-select').addEventListener('change', (e) => {
+      const page = e.target.value;
+      if (page) window.location.href = page;
+    });
 
+    document.getElementById('choose-expense').addEventListener('click', () => {
+      document.getElementById('quickadd-choice').style.display = 'none';
+      document.getElementById('expense-card').style.display = 'block';
+    });
+
+    document.getElementById('choose-recurring').addEventListener('click', () => {
+      document.getElementById('quickadd-choice').style.display = 'none';
+      document.getElementById('recurring-card').style.display = 'block';
+    });
+
+    function goBack() {
+      document.getElementById('expense-card').style.display = 'none';
+      document.getElementById('recurring-card').style.display = 'none';
+      document.getElementById('quickadd-choice').style.display = 'flex';
+    }
+
+    document.getElementById('expense-form').addEventListener('submit', function(e) {
+      e.preventDefault();
       const transaction = {
         desc: document.getElementById('desc').value,
         amount: parseFloat(document.getElementById('amount').value),
         type: document.getElementById('type').value,
         date: document.getElementById('date').value,
-        frequency: document.getElementById('frequency').value
+        recurring: false
       };
-
       let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
       transactions.push(transaction);
       localStorage.setItem('transactions', JSON.stringify(transactions));
-
-      form.reset();
       alert('Transaction added!');
+      this.reset();
     });
 
-    // Dropdown navigation logic
-    document.getElementById('nav-select').addEventListener('change', (e) => {
-      const page = e.target.value;
-      if (page) {
-        window.location.href = page;
-      }
+    document.getElementById('recurring-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const recurring = {
+        desc: document.getElementById('rdesc').value,
+        amount: parseFloat(document.getElementById('ramount').value),
+        frequency: document.getElementById('frequency').value,
+        startDate: document.getElementById('startDate').value,
+        endDate: document.getElementById('endDate').value || null,
+        recurring: true
+      };
+      let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+      transactions.push(recurring);
+      localStorage.setItem('transactions', JSON.stringify(transactions));
+      alert('Recurring payment added!');
+      this.reset();
     });
   </script>
 </body>

@@ -10,12 +10,22 @@
 <body>
   <div id="wrapper">
     <header>
+      <h1 class="site-title">Save Path</h1>
       <nav class="top-nav">
-		  <div class="logo"><a href="index.html">Save Path</a></div>
-          <a href="dashboard.html">Dashboard</a>
-          <a href="calendar.html">Calendar</a>
-          <a href="visuals.html">Visuals</a>
-          <a href="goals.html">Goals</a>
+        <a href="index.html" class="home-link">Home</a>
+
+        <div class="controls">
+          <label for="nav-select">Explore:</label>
+          <select id="nav-select">
+            <option value=""> </option>
+            <option value="dashboard.html">Dashboard</option>
+            <option value="visuals.html">Visuals</option>
+            <option value="goals.html">Goals</option>
+            <option value="calendar.html">Calendar</option>
+          </select>
+        </div>
+
+        <a href="quickadd.html" class="quick-add-btn">+ Quick Add</a>
       </nav>
     </header>
 
@@ -148,6 +158,13 @@
       document.getElementById('forward-day').onclick = () => calendar.incrementDate({ days: 1 });
       document.getElementById('back-week').onclick = () => calendar.incrementDate({ days: -7 });
       document.getElementById('forward-week').onclick = () => calendar.incrementDate({ days: 7 });
+    });
+	
+	document.getElementById('nav-select').addEventListener('change', (e) => {
+      const page = e.target.value;
+      if (page) {
+        window.location.href = page;
+      }
     });
   </script>
 </body>

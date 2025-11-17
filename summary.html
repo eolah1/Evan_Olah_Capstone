@@ -118,13 +118,22 @@
 <body>
   <div id="wrapper">
     <header>
-      <div class="logo"><a href="index.html">Save Path</a></div>
+      <h1 class="site-title">Save Path</h1>
       <nav class="top-nav">
-          <a href="quickadd.html" class="home-link">Quick Add</a>
-          <a href="dashboard.html">Dashboard</a>
-          <a href="calendar.html">Calendar</a>
-          <a href="visuals.html">Visuals</a>
-          <a href="goals.html">Goals</a>
+        <a href="index.html" class="home-link">Home</a>
+
+        <div class="controls">
+          <label for="nav-select">Explore:</label>
+          <select id="nav-select">
+            <option value=""> </option>
+            <option value="dashboard.html">Dashboard</option>
+            <option value="visuals.html">Visuals</option>
+            <option value="goals.html">Goals</option>
+            <option value="calendar.html">Calendar</option>
+          </select>
+        </div>
+
+        <a href="quickadd.html" class="quick-add-btn">+ Quick Add</a>
       </nav>
     </header>
 
@@ -185,7 +194,6 @@
 
     const balance = totalIncome - totalExpenses;
 
-    // Update table cells with color coding
     const incomeCell = document.getElementById('total-income');
     incomeCell.textContent = `+$${totalIncome.toFixed(2)}`;
     incomeCell.style.color = '#007f5f';
@@ -197,6 +205,13 @@
     const balanceCell = document.getElementById('balance');
     balanceCell.textContent = `$${balance.toFixed(2)}`;
     balanceCell.style.color = balance >= 0 ? '#007f5f' : '#d00000';
+	
+    document.getElementById('nav-select').addEventListener('change', (e) => {
+      const page = e.target.value;
+      if (page) {
+        window.location.href = page;
+      }
+    });	
   </script>
 </body>
 </html>

@@ -9,25 +9,40 @@
 <body>
   <div id="wrapper">
     <header>
-      <div class="logo"><a href="index.html">Save Path</a></div>
+      <h1 class="site-title">Save Path</h1>
       <nav class="top-nav">
-          <a href="quickadd.html" class="home-link">Quick Add</a>
-          <a href="dashboard.html">Dashboard</a>
-          <a href="calendar.html">Calendar</a>
-          <a href="visuals.html">Visuals</a>
-          <a href="goals.html">Goals</a>
+        <a href="index.html" class="home-link">Home</a>
+
+        <div class="controls">
+          <label for="nav-select">Explore:</label>
+          <select id="nav-select">
+            <option value=""> </option>
+            <option value="dashboard.html">Dashboard</option>
+            <option value="visuals.html">Visuals</option>
+            <option value="goals.html">Goals</option>
+            <option value="calendar.html">Calendar</option>
+          </select>
+        </div>
+
+        <a href="quickadd.html" class="quick-add-btn">+ Quick Add</a>
       </nav>
     </header>
 
     <main>
-      <section class="content-container">
-        <div class="left-column">
-          <h2>Dashboard</h2>
-          <p>Click below to view recent transactions, see a financial summary, or add a new expense/income.</p>
-        </div>
-        <div class="right-column">
-          <img src="images/dashboard.png" alt="Dashboard Visualization">
-        </div>
+      <section class="welcome-message">
+        <h2 id="welcome-text"></h2>
+      </section>
+
+      <section class="upcoming-payments">
+        <h2>Upcoming Payments</h2>
+        <ul id="payment-list"></ul>
+      </section>
+
+      <section class="goal-progress">
+        <h2>Goal Progress</h2>
+        <label id="goal-label"></label>
+        <progress id="goal-bar" value="0" max="100"></progress>
+        <p id="goal-percent"></p>
       </section>
 
       <section class="dashboard-info-boxes">
@@ -50,5 +65,73 @@
       <p>&copy; 2025 Budget Calendar | All Rights Reserved<br>Contact us: 777-888-9999</p>
     </footer>
   </div>
+  
+  <script>
+    document.getElementById('nav-select').addEventListener('change', (e) => {
+      const page = e.target.value;
+      if (page) window.location.href = page;
+    });
+
+    function showWelcomeMessage() {
+      const now = new Date();
+      const month = now.toLocaleString('default', { month: 'long' });
+      const year = now.getFullYear();
+      document.getElementById('welcome-text').textContent =
+        `Welcome back! Here’s your financial snapshot for ${month} ${year}`;
+    }
+
+    function showUpcomingPayments() {
+      const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+      const today = new Date();
+      const tomorrow = new Date();
+      tomorrow.setDate(today.getDate() + 1);
+
+      const paymentList = document.getElementById('payment-list');
+      paymentList.innerHTML = '';
+
+      transactions.forEach(tx => {
+        const txDate = new Date(tx.date);
+        if (
+          txDate.toDateString() === today.toDateString() ||
+          txDate.toDateString() === tomorrow.toDateString()
+        ) {
+          const li = document.createElement('li');
+          li.textContent = `${tx.desc} - $${tx.amount} (${txDate.toDateString()})`;
+          paymentList.appendChild(li);
+        }
+      });
+
+      if (!paymentList.hasChildNodes()) {
+        paymentList.innerHTML = '<li>No payments today or tomorrow.</li>';
+      }
+    }
+
+    function updateGoalProgress() {
+      const goals = JSON.parse(localStorage.getItem('goals')) || [];
+      if (goals.length > 0) {
+        const goal = goals[0];
+        const current = goal.saved || 0;
+        const target = goal.target || 1;
+
+        const bar = document.getElementById('goal-bar');
+        const percent = document.getElementById('goal-percent');
+        const label = document.getElementById('goal-label');
+
+        bar.value = current;
+        bar.max = target;
+        const pct = Math.round((current / target) * 100);
+
+        label.textContent = `${goal.name}: $${current} / $${target}`;
+        percent.textContent = `${pct}% complete`;
+      } else {
+        document.getElementById('goal-label').textContent = 'No goals set yet.';
+        document.getElementById('goal-percent').textContent = '';
+      }
+    }
+
+    showWelcomeMessage();
+    showUpcomingPayments();
+    updateGoalProgress();
+  </script>
 </body>
 </html>
